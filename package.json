@@ -1,0 +1,23 @@
+{
+  "name": "delilah-resto",
+  "version": "1.0.0",
+  "description": "REST API para pedidos online del restaurante Delilah",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daniel-cordoba/DelilahBloque3.git"
+  },
+  "author": "Daniel Córdoba Arias",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daniel-cordoba/DelilahBloque3/issues"
+  },
+  "homepage": "https://github.com/daniel-cordoba/DelilahBloque3#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.10.9"
+  }
+}
