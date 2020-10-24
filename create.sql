@@ -41,14 +41,14 @@ CREATE TABLE `Usuarios` (
 	`nombre_apellido` VARCHAR(50) NOT NULL,
 	`email` VARCHAR(50) NOT NULL,
 	`telefono` VARCHAR(50) NOT NULL,
-	`contraseña` VARCHAR(50) NOT NULL,
+	`contrasenia` VARCHAR(50) NOT NULL,
     `admin` TINYINT NOT NULL DEFAULT 0,
 	PRIMARY KEY (`ID`)
 )
 COLLATE='latin1_swedish_ci'
 ;
 
-INSERT INTO Usuarios (usuario, nombre_apellido, email, telefono, contraseña, admin)
+INSERT INTO Usuarios (usuario, nombre_apellido, email, telefono, contrasenia, admin)
 VALUES ("admin", "admin", "admin@admin.com", "455867", "admin", "1"),
        ("cliente", "cliente", "cliente@cliente.com", "555555", "cliente", "0");
        
