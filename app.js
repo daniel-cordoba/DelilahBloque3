@@ -99,7 +99,31 @@ app.post('/productos', validacion.validarToken, validacion.validarAdmin, (req, r
     }    
 });
 
+app.delete('/productos/:ID', validacion.validarToken, validacion.validarAdmin, (req, res)=>{
+    const ID = req.params;
+    console.log(ID.ID);
+    console.log(isNaN(ID.ID));
+    if(isNaN(ID.ID)){
+        res.status(400).json('Error en el ingreso del ID');
+    }else{
+        sequelize.query('DELETE FROM menu WHERE ID = '+ID.ID+';')
+        .then(resp=>{
+            console.log(resp);
+            if(resp[0].affectedRows === 0){
+                res.status(404).json('El producto no fue encontrado.'); 
+            }else{
+                res.status(200).json('Producto eliminado con éxito.');
+            }
+            
+        }).catch(err=>{
+            console.error(err);
+            res.status(400).json('Error en el ingreso del ID');
+        });
+    }
+});
 
+//ENDPOINT PEDIDOS
+app.get
 
 
 app.listen(3000,()=>{
