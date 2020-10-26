@@ -123,6 +123,33 @@ app.delete('/productos/:ID', validacion.validarToken, validacion.validarAdmin, (
 });
 
 //ENDPOINT PEDIDOS
+app.get('/pedidos', validacion.validarToken, (req, res)=>{
+    const payload = jwt.verify(req.headers.authorization.split(' ')[1], process.env.S);
+    console.log(payload.rol);
+    if (payload.rol === 1) {     
+        const pedidos = 'SELECT * FROM pedidos;';
+        sequelize.query(pedidos, {type: sequelize.QueryTypes.SELECT})
+        .then(resp=>{
+            console.log(resp);
+            res.status(200).json(resp);
+        }).catch(err=>{
+            console.log(err);
+            res.status(404).json('No se encuentra los pedidos.');
+        });   
+    } else if(payload.rol === 0){
+        const pedidos = 'SELECT * FROM pedidos WHERE usuario = "'+payload.user+'";';
+        sequelize.query(pedidos, {type: sequelize.QueryTypes.SELECT})
+        .then(resp=>{
+            console.log(resp);
+            res.status(200).json(resp);
+        }).catch(err=>{
+            console.log(err);
+            res.status(404).json('No se encuentra los pedidos.');
+        });   
+    }
+
+});
+
 app.post('/pedidos', validacion.validarToken, (req, res)=>{
     console.log("Buenas" + req.body);
     const payload = jwt.verify(req.headers.authorization.split(' ')[1], process.env.S);
@@ -131,9 +158,8 @@ app.post('/pedidos', validacion.validarToken, (req, res)=>{
     const {idProductos, metodoPago, direccion} = req.body;        
     const espacio = / /;
     if(espacio.test(idProductos)){
-        res.status(400).json('Pedido con datos inválidos, no se permiten espacios en la variable idProductos');
-    }
-    
+        return res.status(400).json('Pedido con datos inválidos, no se permiten espacios en la variable idProductos');
+    }    
     const pedido = 'INSERT INTO pedidos (usuario, idProductos, metodoPago, direccion, estado) VALUES(?, ?, ?, ?, ?);'
     sequelize.query(pedido, 
         {
@@ -148,6 +174,18 @@ app.post('/pedidos', validacion.validarToken, (req, res)=>{
         });
 });
 
+app.put('/pedidos', validacion.validarToken, validacion.validarAdmin, (req,res)=>{
+    const {ID, estado} = req.body;
+    const estadoUpdate = 'UPDATE pedidos SET estado = "'+estado+'" WHERE ID = '+ID+';';
+    sequelize.query(estadoUpdate, {type: sequelize.QueryTypes.UPDATE})
+    .then(resp=>{
+        console.log(resp);
+        res.status(200).json('Pedido editado exitosamente');
+    }).catch(err=>{
+        console.log(err);
+        res.status(400).json('Error en peticion por datos invalidos');
+    })
+})
 
 app.listen(3000,()=>{
     console.log('servidor corriendo en el puerto 3000');
