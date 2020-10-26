@@ -1,13 +1,13 @@
-CREATE DATABASE `Delilah`;
-USE `Delilah`;
+CREATE DATABASE `delilah`;
+USE `delilah`;
 
-CREATE TABLE `Menu` (
+CREATE TABLE `menu` (
 	`ID` INT NOT NULL AUTO_INCREMENT,
-	`Categoria` VARCHAR(50) NOT NULL,
-	`Producto` VARCHAR(50) NOT NULL,
-	`Precio` INT UNSIGNED NOT NULL,
-	`Descripcion` TINYTEXT NOT NULL,
-	`Disponible` TINYINT NOT NULL DEFAULT 0,
+	`categoria` VARCHAR(50) NOT NULL,
+	`producto` VARCHAR(50) NOT NULL,
+	`precio` INT UNSIGNED NOT NULL,
+	`descripcion` TINYTEXT NOT NULL,
+	`disponible` TINYINT NOT NULL DEFAULT 0,
 	PRIMARY KEY (`ID`)
 )
 COLLATE='latin1_swedish_ci'
@@ -35,7 +35,7 @@ VALUES ("Bebidas Calientes", "Espresso", 2500, "Bebida caliente, preparada con 2
        ("Reposteria", "Pastel hojaldrado hawaiano", 3500, "Pastel hojaldrado relleno de queso, albaca y champiñones.", "1"),
        ("Reposteria", "Pastel hojaldrado de jamon y queso", 3500, "Pastel hojaldrado relleno de jamón y queso.", "1");
 
-CREATE TABLE `Usuarios` (
+CREATE TABLE `usuarios` (
 	`ID` INT NOT NULL AUTO_INCREMENT,
 	`usuario` VARCHAR(50) NOT NULL,
 	`nombre_apellido` VARCHAR(50) NOT NULL,
@@ -48,7 +48,12 @@ CREATE TABLE `Usuarios` (
 COLLATE='latin1_swedish_ci'
 ;
 
-INSERT INTO Usuarios (usuario, nombre_apellido, email, telefono, contrasenia, admin)
+INSERT INTO usuarios (usuario, nombre_apellido, email, telefono, contrasenia, admin)
 VALUES ("admin", "admin", "admin@admin.com", "455867", "admin", "1"),
        ("cliente", "cliente", "cliente@cliente.com", "555555", "cliente", "0");
        
+/* CREATE TABLE `Tokens` (
+	`token` VARCHAR(200) NOT NULL
+)
+COLLATE='latin1_swedish_ci'
+; */
