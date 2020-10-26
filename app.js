@@ -123,7 +123,30 @@ app.delete('/productos/:ID', validacion.validarToken, validacion.validarAdmin, (
 });
 
 //ENDPOINT PEDIDOS
-app.get
+app.post('/pedidos', validacion.validarToken, (req, res)=>{
+    console.log("Buenas" + req.body);
+    const payload = jwt.verify(req.headers.authorization.split(' ')[1], process.env.S);
+    const usuario = payload.user;
+    const estado = "NUEVO";
+    const {idProductos, metodoPago, direccion} = req.body;        
+    const espacio = / /;
+    if(espacio.test(idProductos)){
+        res.status(400).json('Pedido con datos inválidos, no se permiten espacios en la variable idProductos');
+    }
+    
+    const pedido = 'INSERT INTO pedidos (usuario, idProductos, metodoPago, direccion, estado) VALUES(?, ?, ?, ?, ?);'
+    sequelize.query(pedido, 
+        {
+            replacements: [usuario, idProductos, metodoPago, direccion, estado],
+            type: sequelize.QueryTypes.INSERT
+        }).then(resp=>{
+            console.log(resp);
+            res.status(200).json('Pedido realizado exitosamente.');
+        }).catch(err=>{
+            console.log(err);
+            res.status(400).json('Pedido con datos inválidos.');
+        });
+});
 
 
 app.listen(3000,()=>{
