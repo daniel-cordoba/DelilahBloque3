@@ -120,8 +120,7 @@ app.delete('/productos/:ID', validacion.validarToken, validacion.validarAdmin, (
                 res.status(404).json('El producto no fue encontrado'); 
             }else{
                 res.status(200).json('Producto eliminado con éxito');
-            }
-            
+            }            
         }).catch(err=>{
             console.error(err);
             res.status(400).json('Error en la sintaxis o estructura de la petición');
@@ -165,6 +164,9 @@ app.post('/pedidos', validacion.validarToken, (req, res)=>{
     const espacio = / /;
     if(espacio.test(idProductos)){
         return res.status(400).json('Pedido con datos inválidos, no se permiten espacios en la variable idProductos');
+    }
+    if(!(metodoPago === 'targeta' || metodoPago === 'efectivo')){
+        return res.status(400).json('Error en la sintaxis o estructura de la petición');
     }    
     const pedido = 'INSERT INTO pedidos (usuario, idProductos, metodoPago, direccion, estado) VALUES(?, ?, ?, ?, ?);'
     sequelize.query(pedido, 
@@ -176,7 +178,7 @@ app.post('/pedidos', validacion.validarToken, (req, res)=>{
             res.status(200).json('Pedido realizado exitosamente');
         }).catch(err=>{
             console.log(err);
-            res.status(400).json('Pedido con datos inválidos');
+            res.status(400).json('Error en la sintaxis o estructura de la petición');
         });
 });
 
@@ -196,6 +198,26 @@ app.put('/pedidos', validacion.validarToken, validacion.validarAdmin, (req,res)=
         res.status(400).json('Error en la sintaxis o estructura de la petición')
     }
         
+});
+
+app.delete('/pedidos/:ID', validacion.validarToken, validacion.validarAdmin, (req, res)=>{
+    const ID = req.params;
+    if(isNaN(ID.ID)){
+        res.status(400).json('Error en la sintaxis o estructura de la petición');
+    }else{
+        sequelize.query('DELETE FROM pedidos WHERE ID = '+ID.ID+';')
+        .then(resp=>{
+            console.log(resp);
+            if(resp[0].affectedRows === 0){
+                res.status(404).json('El pedido no fue encontrado'); 
+            }else{
+                res.status(200).json('Pedido eliminado con éxito');
+            }            
+        }).catch(err=>{
+            console.error(err);
+            res.status(400).json('Error en la sintaxis o estructura de la petición');
+        });
+    }
 });
 
 app.listen(3000,()=>{
