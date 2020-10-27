@@ -1,12 +1,9 @@
-const sequelize = require('./conexion');
 const jwt = require('jsonwebtoken');
 
 class Middleware{
     validarToken(req, res, next) {
-        try {
-        console.log(req.headers.authorization);
-        const payload = jwt.verify(req.headers.authorization.split(' ')[1], process.env.S);
-        console.log(payload);
+        try {        
+        const payload = jwt.verify(req.headers.authorization.split(' ')[1], process.env.S);        
         if(payload){
             return next()
         }
@@ -16,14 +13,12 @@ class Middleware{
         
     }
     validarAdmin(req, res, next){
-        console.log(req.headers.authorization);
         const payload = jwt.verify(req.headers.authorization.split(' ')[1], process.env.S);
-        if(payload.rol === 1){
-            console.log('ud es administrador');
+        if(payload.rol === 1){            
             return next();
         }else{
-            console.error('No posee los permisos de admin');
-            res.status(401).json('Necesita privilegios de administrador para esta peticion.');
+            console.error('No posee los permisos de administrador');
+            res.status(401).json('La petición requeire del rol administrador');
         }
     }
 }
