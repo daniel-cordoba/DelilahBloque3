@@ -3,8 +3,9 @@ require('dotenv').config();
 
 const seq = new Sequelize('delilah', process.env.U, process.env.P,
 {
-    dialect:'mariadb',
-    host: '127.0.0.1'
+    dialect:'mysql',
+    host: process.env.H,
+    port: process.env.PORT
 });
 
 seq.authenticate()

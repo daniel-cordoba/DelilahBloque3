@@ -7,6 +7,18 @@ const middleware = require('./src/middleware');
 app.use(express.json());
 const validacion = new middleware;
 
+//CREACION DE USUARIO ADMINISTRADOR
+function admin() {
+    const admin = 'INSERT INTO Usuarios (usuario, nombre_apellido, email, telefono, contrasenia, admin) VALUES (?, ?, ?, ?, ?, ?);';
+    sequelize.query(admin, 
+    {
+        replacements:[process.env.U_ADMIN, 'admin', 'admin@admin.com', '0', process.env.P_ADMIN, 1],
+        type: sequelize.QueryTypes.INSERT
+    });
+}
+admin();
+
+
 //ENDPOINT REGISTRO Y LOGIN
 app.post('/registro', (req, res)=>{
     const {usuario, nombre_apellido, email, telefono, contrasenia} = req.body;
@@ -63,11 +75,10 @@ app.post('/login', (req, res)=>{
 
 //ENDPOINT PRODUCTOS
 app.get('/productos', validacion.validarToken, (req, res)=>{
-    console.log('GET productos');
     const productos = 'SELECT * FROM Menu';
     sequelize.query(productos)
     .then(resp=>{
-        res.status(200).json(resp);
+        res.status(200).json(resp[0]);
     }).catch(err=>{
         console.error(err);
         res.status(404).json('Recurso no encontrado');
