@@ -8,7 +8,7 @@ class Middleware{
             return next()
         }
         } catch (err) {
-            res.status(401).json('Sin autorización, esta petición requiere del uso de un Token.');
+            res.status(403).json('Sin autorización, esta petición requiere de log-in.');
         }
         
     }
@@ -18,7 +18,7 @@ class Middleware{
             return next();
         }else{
             console.error('No posee los permisos de administrador');
-            res.status(401).json('La petición requeire del rol administrador');
+            res.status(403).json('La petición requeire del rol administrador');
         }
     }
 }

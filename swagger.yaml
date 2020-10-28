@@ -1,0 +1,337 @@
+swagger: "2.0"
+info:
+  description: "API para pedidos de comida deliciosa. Como cliente, podrás registrate, ver el listado de nuestros productos y realizar una orden. Los administradores del restaurante tiene la posibilidad de recibir pedidos y actualizarlos."
+  version: "1.0.0"
+  title: "Delilah Restó"
+host: "localhost:3000"
+tags: 
+- name: "Registro y Login"
+  description: "Endpoints para registro e ingreso de cuentas"
+- name: "Productos"
+  description: "Endpoints para productos"
+- name: "Pedidos"
+  description: "Endpoints para pedidos"
+schemes:
+- "http"
+
+paths:
+  /login:
+    post:
+      tags:
+      - "Registro y Login"
+      summary: "Autentica y autoriza usuarios en la aplicación."
+      description: ""
+      operationId: "login"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Objeto cliente, que será almacenado en la base de datos."
+        required: true
+        schema:
+          $ref: "#/definitions/Login"
+      responses:
+        "200":
+          description: "Login realizado con éxito, su token es el siguiente: 'Token'"
+        "404":
+          description: "Recurso no encontrado, usuario o contraseña incorrectas"
+          
+  /registro:
+    post:
+      tags:
+      - "Registro y Login"
+      summary: "Registrar un usuario nuevo en la aplicación."
+      description: ""
+      operationId: "registro"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Objeto que almacenará la información del usuario en la base de datos, la propiedad admin por defecto será false."
+        required: true
+        schema:
+          $ref: "#/definitions/Registro"
+      responses:
+        "200":
+          description: "Usuario registrado con exito"
+        "400":
+          description: "- La solicitud contiene sintaxis errónea \n - El usuario o email, ya están en uso"
+         
+          
+  /productos:
+    get:
+      tags:
+      - "Productos"
+      summary: "Obtener lista de todos los productos ofrecidos en el café."
+      operationId: "obtenerProductos"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Respuesta exitosa."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Productos"
+        "404":
+          description: "Recurso no encontrado"
+    post:
+      tags:
+      - "Productos"
+      summary: "Editar o agrega productos (Disponible solo para usuarios de rol administrador)."
+      description: ""
+      operationId: "editarProductos"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Objeto producto, para el cual hay que tener en cuenta lo siguiente: Para agregar el producto la variable accion_ID debe ser igual a cero (accion_ID = 0). En caso de tener accion_ID mayor que cero (accion_ID > 0) modificará los datos del producto, siendo accion_ID la ID del producto a modificar."
+        required: true
+        schema:
+          $ref: "#/definitions/ProductosPost"
+      responses:
+        "200":
+          description: "- Producto agregado con éxito \n - Producto editado con éxito"
+        "400":
+          description: "- Error en la sintaxis o en la estructura \n - A ingresado mal el parámetro 'accion_ID', la solicitud no se pudo procesar"
+        "403":
+          description: "La petición requiere del rol administrador"
+          
+  /productos/{productoId}:
+    delete:
+        tags:
+        - "Productos"
+        summary: "Método para eliminar un producto (Disponible solo usuarios de rol administrador)."
+        description: ""
+        operationId: "eliminarProducto"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+        - name: "productoId"
+          in: "path"
+          description: "ID del producto a eliminar."
+          required: true
+          type: "integer"
+          format: "int64"
+        responses:
+          "200":
+            description: "Producto eliminado con exito"
+          "400":
+            description: "Error en la sintaxis o estructura de la petición"
+          "403":
+            description: "La petición requiere del rol administrador"
+          "404":
+            description: "El producto no fue encontrado"
+            
+  /pedidos:
+    get:
+      tags:
+      - "Pedidos"
+      summary: "Ver detalle de los pedidos, para Clientes retorna solamente los pedidos ordenados por el mismo y para Administradores retorna la lista completa de pedidos."
+      operationId: "verPedidos"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Respuesta exitosa"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Pedidos"
+        "404":
+          description: "No encuentra los pedidos"
+    post:
+      tags:
+      - "Pedidos"
+      summary: "Método para realizar un pedido."
+      description: ""
+      operationId: "pedidoCliente"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Objeto pedido que contiene especificaciones del mismo. \n - 'idProductos' es una variable que recibe el número ID de los productos a ordenar, estos DEBEN ir separados por coma (,) y sin espacios, para que el pedido sea exitoso. \n - 'metodoPago' solo puede adoptar los valores 'tarjeta' o 'efectivo', para que el pedido sea exitoso."
+        required: true
+        schema:
+          $ref: "#/definitions/PedidoCliente"
+      responses:
+        "400":
+          description: "- Error en la sintaxis o estructura de la petición \n - Pedido con datos inválidos, no se permiten espacios en la variable idProductos"
+        "200":
+          description: "Pedido realizado exitosamente"
+    put:
+      tags:
+      - "Pedidos"
+      summary: "Método para editar el estado de un pedido (Disponible solo para los perfiles con rol de administrador)."
+      description: ""
+      operationId: "pedidoAdmin"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Identifica un pedido por el ID y modifica su estado (Los únicos valores válidos que puede adoptar la varabiale 'estado' son: nuevo, confirmado, preparando, enviando, entregado)."
+        required: true
+        schema:
+          $ref: "#/definitions/PedidoAdmin"
+      responses:
+        "403":
+          description: "La petición requiere del rol administrador"
+        "400":
+          description: "Error en la sintaxis o estructura de la petición"
+        "200":
+          description: "Pedido editado exitosamente"
+  /pedidos/{pedidoID}:
+    delete:
+        tags:
+        - "Pedidos"
+        summary: "Método para eliminar un pedido (Disponible solo usuarios de rol administrador)."
+        description: ""
+        operationId: "eliminarPedido"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+        - name: "pedidoID"
+          in: "path"
+          description: "ID del pedido a eliminar."
+          required: true
+          type: "integer"
+          format: "int64"
+        responses:
+          "200":
+            description: "Producto eliminado con exito"
+          "400":
+            description: "Error en la sintaxis o estructura de la petición"
+          "403":
+            description: "La petición requiere del rol administrador"
+          "404":
+            description: "El pedido no fue encontrado"
+
+definitions:
+  Productos:
+    type: "object"
+    properties:
+      ID:
+        type: "integer"
+        format: "int64"
+      categoria:
+        type: "string"
+      nombre:
+        type: "string"
+      drecio:
+        type: "integer"
+        format: "int64"
+      descripcion:
+        type: "string"
+      disponible:
+        type: "boolean"
+  ProductosPost:
+    type: "object"
+    properties:
+      accion_ID:
+        type: "integer"
+        format: "int64"
+      categoria:
+        type: "string"
+      nombre:
+        type: "string"
+      precio:
+        type: "integer"
+        format: "int64"
+      descripcion:
+        type: "string"
+      disponible:
+        type: "boolean"
+  PedidoCliente:
+    type: "object"
+    required:
+    - "idProductos"
+    - "metodoPago"
+    - "direccion"
+    properties:
+      idProductos:
+        type: "string"
+        description: "Adentro del array van los números ID de los productos a pedir separados por coma."
+      metodoPago:
+        type: "string"
+      direccion:
+        type: "string"
+  PedidoAdmin:
+    type: "object"
+    required: 
+    - "id"
+    - "estado"
+    properties:
+      ID:
+        type: "integer"
+        format: "int64"
+      estado:
+        type: "string"
+  Pedidos:
+    type: "object"
+    properties:
+      ID:
+        type: "integer"
+        format: "int64"
+      usuario:
+        type: "string"
+      idProductos:
+        type: "string"
+        description: "Adentro del array van los números ID de los productos a pedir separados por coma."
+      metodoPago:
+        type: "string"
+      direccion:
+        type: "string"
+      estado:
+        type: "string"
+  Registro:
+    type: "object"
+    required:
+    - "usuario"
+    - "nombre_apellido"
+    - "email"
+    - "contrasenia"
+    properties:
+      usuario:
+        type: "string"
+      nombre_apellido:
+        type: "string"
+      email:
+        type: "string"
+      telefono:
+        type: "integer"
+        format: "int64"
+      direccion:
+        type: "string"
+      contrasenia:
+        type: "string"
+      admin:
+        type: "boolean"
+  Login:
+    type: "object"
+    required:
+    - "usuario_mail"
+    - "contrasenia"
+    properties:
+      usuario_mail:
+        type: "string"
+      contrasenia:
+        type: "string"

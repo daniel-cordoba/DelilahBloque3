@@ -1,6 +1,8 @@
 # DelilahBloque3
 API REST del restaurante Delilah, la cual se encargará de manejar y almacenar los pedidos de manera efectiva en una base de datos para su administracion y visualización.
 
+Para ver información detallada de los Endpoints en la API, cague el archivo `swagger.yaml` en el siguiente enlace [SWAGGER](https://editor.swagger.io).
+
 ## Requisitos locales para ejecutar la aplicación
 1. Para que la API REST funcione correctamente debe instalar lo siguiente en su ordenador:
 
@@ -12,7 +14,7 @@ API REST del restaurante Delilah, la cual se encargará de manejar y almacenar l
 
 2. Luego, debe crear la base de datos, para lo cual ejecutará el script `create.sql` en el gestos de base de datos `MySQL Workbench`. Para evitar errores, cargue el archivo en el gesto de base de datos y luego lo ejecuta (Lo anterior, porque en algunos casos, ejecutarlo directamente, antes de importarlo, puede generar errores).
 
-3. Al tener lista la base de datos, procedemos a configurar las variables de entorno (Tener en cuenta que dentro de estas variables de entorno también vamos a configurar el usario administrador, el cual tendrá acceso a los Endpoint que requieran de su rol), para lo cual debe crear un archivo `.env` en la carpeta principal de la aplicacion. Dentro del `.env` escribirá el siguiente texto, reemplazando aquello que se encuentra entre `<>` por las variables correspondientes a su entorno local:
+3. Al tener lista la base de datos, procedemos a configurar las variables de entorno (Tener en cuenta que dentro de estas variables de entorno también vamos a configurar el usario administrador, el cual tendrá acceso a los Endpoint que requieran de su rol), para lo cual debe crear un archivo `.env` en la carpeta principal de la aplicacion. Dentro del `.env` escribirá el siguiente texto, reemplazando aquello que se encuentra entre `<>` (Incluyendo los símbolos) por las variables correspondientes a su entorno local:
 
 ```
 U=<Usuario configurado en la base de datos que usualmente es root>
