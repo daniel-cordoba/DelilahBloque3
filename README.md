@@ -1,7 +1,7 @@
 # DelilahBloque3
 API REST del restaurante Delilah, la cual se encargará de manejar y almacenar los pedidos de manera efectiva en una base de datos para su administracion y visualización.
 
-Para ver información detallada de los Endpoints en la API, cague el archivo `swagger.yaml` en el siguiente enlace [SWAGGER](https://editor.swagger.io).
+Para ver información detallada de los Endpoints en la API, cargue el archivo `swagger.yaml` en el siguiente enlace [SWAGGER](https://editor.swagger.io).
 
 ## Requisitos locales para ejecutar la aplicación
 1. Para que la API REST funcione correctamente debe instalar lo siguiente en su ordenador:
