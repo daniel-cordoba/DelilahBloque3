@@ -302,6 +302,10 @@ definitions:
         type: "string"
       estado:
         type: "string"
+      hora:
+        type: "string"
+        format: "custom date"
+        example: "10:50:20"
   Registro:
     type: "object"
     required:
