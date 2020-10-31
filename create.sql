@@ -47,10 +47,6 @@ CREATE TABLE `usuarios` (
 )
 COLLATE='latin1_swedish_ci'
 ;
-
-INSERT INTO usuarios (usuario, nombre_apellido, email, telefono, contrasenia, admin)
-VALUES ("admin", "admin", "admin@admin.com", "455867", "admin", "1"),
-       ("cliente", "cliente", "cliente@cliente.com", "555555", "cliente", "0");
        
 CREATE TABLE `pedidos` (
 	`ID` INT NOT NULL AUTO_INCREMENT,
@@ -60,6 +56,7 @@ CREATE TABLE `pedidos` (
 	`direccion` VARCHAR(100) NOT NULL,
 	`estado` VARCHAR(50) NOT NULL DEFAULT 'nuevo',
     `admin` TINYINT NOT NULL DEFAULT 0,
+    `hora` TIME NOT NULL,
 	PRIMARY KEY (`ID`)
 )
 COLLATE='latin1_swedish_ci'

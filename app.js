@@ -171,6 +171,15 @@ app.post('/pedidos', validacion.validarToken, (req, res)=>{
     const payload = jwt.verify(req.headers.authorization.split(' ')[1], process.env.S);
     const usuario = payload.user;
     const estado = "NUEVO";
+    function agregarCero(c) {
+        if (c < 10) c = "0" + c;
+        return c;
+    }
+    let hora = new Date();
+    const h = agregarCero(hora.getHours());
+    const m = agregarCero(hora.getMinutes());
+    const s = agregarCero(hora.getSeconds());
+    hora = h + ':' + m + ':' + s;
     const {idProductos, metodoPago, direccion} = req.body;        
     const espacio = / /;
     if(espacio.test(idProductos)){
@@ -179,10 +188,10 @@ app.post('/pedidos', validacion.validarToken, (req, res)=>{
     if(!(metodoPago === 'targeta' || metodoPago === 'efectivo')){
         return res.status(400).json('Error en la sintaxis o estructura de la petición');
     }    
-    const pedido = 'INSERT INTO pedidos (usuario, idProductos, metodoPago, direccion, estado) VALUES(?, ?, ?, ?, ?);'
+    const pedido = 'INSERT INTO pedidos (usuario, idProductos, metodoPago, direccion, estado, hora) VALUES(?, ?, ?, ?, ?, ?);'
     sequelize.query(pedido, 
         {
-            replacements: [usuario, idProductos, metodoPago, direccion, estado],
+            replacements: [usuario, idProductos, metodoPago, direccion, estado, hora],
             type: sequelize.QueryTypes.INSERT
         }).then(resp=>{
             console.log(resp);
