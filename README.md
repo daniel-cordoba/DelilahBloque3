@@ -21,7 +21,7 @@ U=<Usuario configurado en la base de datos que usualmente es root>
 P=<Contraseña de la base de datos>
 S=<Llave de seguridad para los tokens>
 H=<Host que si va a ser ejecutado en entorno local es 127.0.0.1>
-PORT=<Puesto de la base de datos que usualmente es 3306>
+PORT=<Puerto de la base de datos que usualmente es 3306>
 U_ADMIN=<Usuario administrador>
 P_ADMIN=<Contraseña de usuario administrador>
 ```

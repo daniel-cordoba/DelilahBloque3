@@ -35,7 +35,7 @@ paths:
           $ref: "#/definitions/Login"
       responses:
         "200":
-          description: "Login realizado con éxito, su token es el siguiente: 'Token'"
+          description: "Login realizado con éxito, su bearer token es el siguiente: 'Token'"
         "404":
           description: "Recurso no encontrado, usuario o contraseña incorrectas"
           
@@ -105,6 +105,8 @@ paths:
           description: "- Error en la sintaxis o en la estructura \n - A ingresado mal el parámetro 'accion_ID', la solicitud no se pudo procesar"
         "403":
           description: "La petición requiere del rol administrador"
+        "404":
+          description: "Producto no encontrado"
           
   /productos/{productoId}:
     delete:
@@ -186,7 +188,7 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "Identifica un pedido por el ID y modifica su estado (Los únicos valores válidos que puede adoptar la varabiale 'estado' son: nuevo, confirmado, preparando, enviando, entregado)."
+        description: "Identifica un pedido por el ID y modifica su estado (Los únicos textos que puede adoptar la variable 'estado' son: 'nuevo', 'confirmado', 'preparando', 'enviando', 'entregado')."
         required: true
         schema:
           $ref: "#/definitions/PedidoAdmin"
@@ -197,6 +199,8 @@ paths:
           description: "Error en la sintaxis o estructura de la petición"
         "200":
           description: "Pedido editado exitosamente"
+        "404":
+          description: "Pedido no encontrado"
   /pedidos/{pedidoID}:
     delete:
         tags:
@@ -234,9 +238,9 @@ definitions:
         format: "int64"
       categoria:
         type: "string"
-      nombre:
+      producto:
         type: "string"
-      drecio:
+      precio:
         type: "integer"
         format: "int64"
       descripcion:
@@ -251,7 +255,7 @@ definitions:
         format: "int64"
       categoria:
         type: "string"
-      nombre:
+      producto:
         type: "string"
       precio:
         type: "integer"
@@ -327,8 +331,6 @@ definitions:
         type: "string"
       contrasenia:
         type: "string"
-      admin:
-        type: "boolean"
   Login:
     type: "object"
     required:

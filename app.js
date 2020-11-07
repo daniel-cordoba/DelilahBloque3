@@ -66,7 +66,7 @@ app.post('/login', (req, res)=>{
             rol: resp[0].admin
         };
         const token = jwt.sign(payload, process.env.S);
-        res.status(200).json('Login realizado con éxito, su token es el siguiente: ' + token);
+        res.status(200).json('Login realizado con éxito, su bearer token es el siguiente: ' + token);
     }).catch(err=>{
         console.error(err);
         res.status(404).json('Recurso no encontrado, usuario o contraseña incorrectas');
@@ -85,7 +85,7 @@ app.get('/productos', validacion.validarToken, (req, res)=>{
     });
 });
 
-app.post('/productos', validacion.validarToken, validacion.validarAdmin, (req, res)=>{
+app.post('/productos', validacion.validarToken, validacion.validarAdmin, validacion.existeProducto, (req, res)=>{
     const {accion_ID, categoria, producto, precio, descripcion, disponible}=req.body;
     if (accion_ID === 0) {
         const productoAdd = 'INSERT INTO menu (categoria, producto, precio, descripcion, disponible) VALUES(?, ?, ?, ?, ?);';
@@ -144,7 +144,7 @@ app.get('/pedidos', validacion.validarToken, (req, res)=>{
     const payload = jwt.verify(req.headers.authorization.split(' ')[1], process.env.S);
     console.log(payload.rol);
     if (payload.rol === 1) {     
-        const pedidos = 'SELECT * FROM pedidos;';
+        const pedidos = 'SELECT ID, usuario, idProductos, metodoPago, direccion, estado, hora FROM pedidos;';
         sequelize.query(pedidos, {type: sequelize.QueryTypes.SELECT})
         .then(resp=>{
             console.log(resp);
@@ -154,7 +154,7 @@ app.get('/pedidos', validacion.validarToken, (req, res)=>{
             res.status(404).json('No se encuentra los pedidos');
         });   
     } else if(payload.rol === 0){
-        const pedidos = 'SELECT * FROM pedidos WHERE usuario = "'+payload.user+'";';
+        const pedidos = 'SELECT ID, usuario, idProductos, metodoPago, direccion, estado, hora FROM pedidos WHERE usuario = "'+payload.user+'";';
         sequelize.query(pedidos, {type: sequelize.QueryTypes.SELECT})
         .then(resp=>{
             console.log(resp);
@@ -170,7 +170,7 @@ app.get('/pedidos', validacion.validarToken, (req, res)=>{
 app.post('/pedidos', validacion.validarToken, (req, res)=>{
     const payload = jwt.verify(req.headers.authorization.split(' ')[1], process.env.S);
     const usuario = payload.user;
-    const estado = "NUEVO";
+    const estado = "nuevo";
     function agregarCero(c) {
         if (c < 10) c = "0" + c;
         return c;
@@ -185,7 +185,7 @@ app.post('/pedidos', validacion.validarToken, (req, res)=>{
     if(espacio.test(idProductos)){
         return res.status(400).json('Pedido con datos inválidos, no se permiten espacios en la variable idProductos');
     }
-    if(!(metodoPago === 'targeta' || metodoPago === 'efectivo')){
+    if(!(metodoPago === 'tarjeta' || metodoPago === 'efectivo')){
         return res.status(400).json('Error en la sintaxis o estructura de la petición');
     }    
     const pedido = 'INSERT INTO pedidos (usuario, idProductos, metodoPago, direccion, estado, hora) VALUES(?, ?, ?, ?, ?, ?);'
@@ -202,7 +202,7 @@ app.post('/pedidos', validacion.validarToken, (req, res)=>{
         });
 });
 
-app.put('/pedidos', validacion.validarToken, validacion.validarAdmin, (req,res)=>{
+app.put('/pedidos', validacion.validarToken, validacion.validarAdmin, validacion.existePedido, (req,res)=>{
     const {ID, estado} = req.body;
     if (estado === "nuevo" || estado === "confirmado" || estado === "preparando" || estado === "enviando" || estado === "entregado") {
         const estadoUpdate = 'UPDATE pedidos SET estado = "'+estado+'" WHERE ID = '+ID+';';
