@@ -35,7 +35,7 @@ class Middleware{
             }
         }).catch(err=>{
             console.error(err);
-        })
+        });
     }
 
     existePedido(req, res, next){
